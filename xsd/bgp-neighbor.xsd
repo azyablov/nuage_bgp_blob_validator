@@ -1,0 +1,311 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema
+        xmlns:xs="http://www.w3.org/2001/XMLSchema"
+        elementFormDefault="qualified"
+        attributeFormDefault="unqualified"
+        targetNamespace="alu:nuage:bgp:neighbor"
+        xmlns="alu:nuage:bgp:neighbor"
+        xml:lang="en" version="1.1">
+
+    <xs:annotation>
+        <xs:documentation>
+            This module describes the model for BGP Neighbor configuration based on the YANG model configuration.
+            It is a limited subset of all of the configuration parameters available in the variety of vendor implementations,
+            hence it is expected that it would be augmented with vendor-specific configuration data as needed.
+            This YANG model is based on openconfig bgp yang model, but tailored to bgp application for Nuage Networks
+        </xs:documentation>
+    </xs:annotation>
+
+    <xs:include schemaLocation="commons.xsd"/>
+
+    <xs:element name="neighbor" type="Neighbor"/>
+
+    <xs:complexType name="Neighbor">
+        <xs:annotation>
+            <xs:documentation>
+                Parameters related to a BGP neighbor or group
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="config" type="NeighborConfig" minOccurs="0"/>
+            <xs:element name="timers" type="TimersConfig" minOccurs="0"/>
+            <xs:element name="transport" type="TransportConfig" minOccurs="0"/>
+            <xs:element name="error-handling" type="ErrorHandlingConfig" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="NeighborConfig">
+        <xs:annotation>
+            <xs:documentation>
+                Neighbor level configuration items.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:all>
+            <xs:element name="description" type="xs:string" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>
+                        An optional textual description (intended primarily for use
+                        with a peer or group)
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="advertise-inactive" type="xs:boolean" default="false" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>
+                        Enable/disable advertisement of inactive BGP routes to other
+                        BGP Peers
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="disable-4byte-asn" type="xs:boolean" default="false" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>
+                        Enable/disable the advertisement of 4-byte ASN
+                        capability at the peer level
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="disable-capability-negotiation" type="xs:boolean" default="false" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>
+                        Disable capability negotiation for BGP neighbor
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="local-preference" type="LocalPreferenceType" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>
+                        Configure BGP local-preference attribute in incoming
+                        routes from all peers if not specified.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="local-as" type="LocalPreferenceType" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>
+                        Configure BGP Local AS attribute used for connection establishment with the peer.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="next-hop-self" type="xs:boolean" default="false" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>
+                        Configure the neighbor to always set the nexthop path
+                        attribute to itself when advertising to a peer
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="remove-private-as" type="xs:boolean" default="false" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>
+                        Remove private AS numbers from updates sent to peers.
+                        Default: False
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="set-med-out" type="MetricValueType" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>
+                        set the numeric med out value
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="split-horizon" type="xs:boolean" default="false" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>
+                        Configure split horizon for the peer. Enabled by default.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="prefix-limit" type="PrefixLimit" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>
+                        This command configures the maximum number of BGP routes that can be received from a peer.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="host-advertisement" type="xs:boolean" default="false" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>
+                        Advertise /32 subnet routes. By default, we don't announce the route.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="no-prepend-global-as" type="xs:boolean" default="false" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>
+                        Enable/disable the advertisement of 4-byte ASN
+                        capability at the peer level
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="family" type="Family" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>
+                        BGP Neighbor can belong to IPv4, IPv6 or DualStack family.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+       </xs:all>
+    </xs:complexType>
+
+    <xs:complexType name="Family">
+        <xs:annotation>
+            <xs:documentation>
+                Parameters related to a BGP Peer session. It can belong to IPv4, IPv6 or DualStack or EVPN (in future)
+                family
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="ipv4" type="xs:boolean" default="true" minOccurs="0"/>
+            <xs:element name="ipv6" type="xs:boolean" default="false" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="TimersConfig">
+        <xs:annotation>
+            <xs:documentation>
+                Config parameters related to timers associated with the BGP
+                peer
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="connect-retry" default="120" minOccurs="0" type="ConnectRetryTimersType">
+                <xs:annotation>
+                    <xs:documentation>
+                        Time interval in seconds between attempts to establish a
+                        session with the peer.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="hold-time" default="90" minOccurs="0" type="HoldTimersType">
+                <xs:annotation>
+                    <xs:documentation>
+                        Time interval in seconds that a BGP session will be
+                        considered active in the absence of keepalive or other
+                        messages from the peer.  The hold-time is typically
+                        set to 3x the keepalive-interval.
+                        Hold time of 0 indicates the connection to be permanently
+                        up.
+                        Hold time values of 1 and 2 are not allowed to be configured
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="keepalive" default="30" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>
+                        Time interval in seconds between transmission of keepalive
+                        messages to the neighbor.  Typically set to 1/3 the
+                        hold-time.
+                    </xs:documentation>
+                </xs:annotation>
+                <xs:simpleType>
+                    <xs:restriction base="xs:int">
+                        <xs:minInclusive value="0"/>
+                        <xs:maxInclusive value="21845"/>
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:element>
+            <xs:element name="minimum-advertisement-interval" default="30" minOccurs="0" type="PreferenceType">
+                <xs:annotation>
+                    <xs:documentation>
+                        Minimum time which must elapse between subsequent UPDATE
+                        messages relating to a common set of NLRI being transmitted
+                        to a peer. This timer is referred to as
+                        MinRouteAdvertisementIntervalTimer by RFC 4721 and serves to
+                        reduce the number of UPDATE messages transmitted when a
+                        particular set of NLRI exhibit instability.
+                        RFC 4271 - A Border Gateway Protocol 4, Sec 9.2.1.1
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="TransportConfig">
+        <xs:annotation>
+            <xs:documentation>
+                Configuration parameters relating to the transport protocol
+                used by the BGP session to the peer
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="mtu-discovery" type="xs:boolean" default="false" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>
+                        Turns path mtu discovery for BGP TCP sessions on (true)
+                        or off (false)
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="passive-mode" type="xs:boolean" default="false" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>
+                        Wait for peers to issue requests to open a BGP session,
+                        rather than initiating sessions from the local router.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="authentication-key" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>
+                        This command configures the BGP authentication key in ascii format (unencrypted)
+                        for MD5 authentication.
+                    </xs:documentation>
+                </xs:annotation>
+                <xs:simpleType>
+                    <xs:restriction base="xs:string">
+                    <xs:maxLength value="255" />
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:element>
+            <xs:element name="authentication-key-hash2" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>
+                        This command configures the BGP authentication key in ascii format (encrypted)
+                        for MD5 authentication.
+                    </xs:documentation>
+                </xs:annotation>
+                <xs:simpleType>
+                    <xs:restriction base="xs:string">
+                    <xs:maxLength value="342" />
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:element>
+            <xs:element name="multihop" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>
+                        MultiHop needs to be supported in the neighbor blob to support eBGP.
+                    </xs:documentation>
+                </xs:annotation>
+                <xs:simpleType>
+                    <xs:restriction base="xs:int">
+                        <xs:minInclusive value="1"/>
+                        <xs:maxInclusive value="255"/>
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="ErrorHandlingConfig">
+        <xs:annotation>
+            <xs:documentation>
+                Configuration parameters relating to enhanced error handling
+                behaviours for BGP
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="treat-as-withdraw" type="xs:boolean" default="false" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>
+                        Specify whether erroneous UPDATE messages for which the
+                        NLRI can be extracted are treated as though the NLRI is
+                        withdrawn - avoiding session reset";
+                        reference "draft-ietf-idr-error-handling-16
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+</xs:schema>

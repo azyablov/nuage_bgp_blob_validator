@@ -1,0 +1,620 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema
+        xmlns:xs="http://www.w3.org/2001/XMLSchema"
+        targetNamespace="alu:nuage:bgp:routing:policy"
+        xmlns="alu:nuage:bgp:routing:policy"
+        elementFormDefault="qualified"
+        attributeFormDefault="unqualified"
+        xml:lang="en" version="1.1">
+
+    <xs:annotation>
+        <xs:documentation>
+            This module describes a YANG model for routing policy configuration.
+            This YANG model is based on openconfig routing policy yang model, but tailored to routing
+            policy applications for Nuage Networks
+        </xs:documentation>
+    </xs:annotation>
+
+    <xs:include schemaLocation="commons.xsd"/>
+
+    <xs:element name="routing-policy">
+        <xs:complexType>
+            <xs:annotation>
+                <xs:documentation>
+                    top-level container for all routing policy configuration
+                </xs:documentation>
+            </xs:annotation>
+            <xs:sequence>
+                <xs:element name="defined-sets" type="GenericDefinedSet" minOccurs="0"/>
+                <xs:element name="policy-definition" type="PolicyDefinition" minOccurs="0"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:complexType name="PrefixSetType">
+        <xs:annotation>
+            <xs:documentation>
+                Data definition for a list of IPv4 or IPv6 prefixes which
+                are matched as part of a policy
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="prefix-set-name" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>
+                        name / label of the prefix set -- this is used to
+                        reference the set in match conditions
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="prefix" type="PrefixType" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="PrefixType">
+        <xs:annotation>
+            <xs:documentation>
+                List of prefix expressions that are part of the set
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="ip-prefix" type="InetIPv4Prefix" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>
+                        The prefix member in CIDR notation belonging to ipv4
+                        address family
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="ipv6-prefix" type="InetIPv6Prefix" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>
+                        The prefix member in CIDR notation belonging to ipv6
+                        address family
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="masklength-range" type="MaskLengthType" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+
+
+
+    <xs:complexType name="NeighborType">
+        <xs:annotation>
+            <xs:documentation>
+                list of addresses that are part of the neighbor set
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="address" type="IPv4Address" maxOccurs="unbounded">
+                <xs:annotation>
+                    <xs:documentation>
+                        IPv4 address of the neighbor set member
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="NeighborSetType">
+        <xs:annotation>
+            <xs:documentation>
+                Definitions for neighbor sets
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="neighbor-set-name" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>
+                        name / label of the neighbor set -- this is used to
+                        reference the set in match conditions
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="neighbor" type="NeighborType" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="CommunityType">
+        <xs:annotation>
+            <xs:documentation>
+                Specify the community tag to be matched against
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="community-name" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>
+                        List of community tags under one community set to match
+                        against.
+                        Maximum 10 communities supported under each community set
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="CommunitySetType">
+        <xs:annotation>
+            <xs:documentation>
+                Data definition for a list of community tags which are
+                matched as part of a policy statement
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="community-set-name" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>
+                        Name of the community set -- that is used to reference
+                        the set in match conditions
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="community" type="CommunityType" maxOccurs="10"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="ASPathSetType">
+        <xs:annotation>
+            <xs:documentation>
+                List of the defined as-path sets
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="as-path-set-name" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>
+                        Name of the as-oath set -- that is used to reference
+                        the set in match conditions
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="as-path-expression" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>
+                        AS path reg ex.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="PolicyDefinition">
+        <xs:annotation>
+            <xs:documentation>
+                Enclosing container for the list of top-level policy
+                definitions
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="statements" minOccurs="0">
+                <xs:complexType>
+                    <xs:annotation>
+                        <xs:documentation>
+                            Enclosing container for policy statements
+                        </xs:documentation>
+                    </xs:annotation>
+                    <xs:sequence>
+                        <xs:element name="statement" type="StatementType" maxOccurs="unbounded"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="default-action" type="GenericActions" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="StatementType">
+        <xs:annotation>
+            <xs:documentation>
+                Policy statements group conditions and actions
+                within a policy definition.  They are evaluated in
+                the order specified (see the description of policy
+                evaluation at the top of this module.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="name" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>
+                        name of the policy statement
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="conditions" type="GenericConditionsType" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>
+                        Condition statements for this policy statement
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="actions" type="GenericActions">
+                <xs:annotation>
+                    <xs:documentation>
+                        Action statements for this policy statement
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="GenericConditionsType">
+        <xs:annotation>
+            <xs:documentation>
+                Condition statement definitions for checking
+                membership in a generic defined set
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element ref="match-prefix-set" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>
+                        The presence of this container indicates that the routes
+                        should match the prefix-set referenced.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element ref="match-neighbor-set" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>
+                        The presence of this container indicates that the routes
+                        should match the neighbour set referenced
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element ref="match-community-set" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>
+                        The presence of this container indicates that the routes
+                        should match the community-set referenced.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element ref="match-as-path-set" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>
+                        The presence of this container indicates that the routes
+                        should match the as-path-set referenced.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="install-protocol-eq" type="ProtocolType" minOccurs="0"/>
+            <xs:element name="area-eq" type="OSPFAreaID" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>
+                        The presence of this container indicates that the routes
+                        should match the ospf-area referenced.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="match-tag" type="PrefixLimit" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>
+                        The presence of this container indicates that the routes
+                        should match the route-tag referenced.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="metric-type" type="OSPFTypeMetric" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>
+                        The presence of this container indicates that the routes
+                        should match the ospf-type-metric referenced.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:element name="match-as-path-set">
+        <xs:complexType>
+            <xs:annotation>
+                <xs:documentation>
+                    Match a referenced as-path-set according to the logic
+                    defined in the match-set-options leaf
+                </xs:documentation>
+            </xs:annotation>
+            <xs:sequence>
+                <xs:element name="as-path-set" type="xs:string">
+                    <xs:annotation>
+                        <xs:documentation>
+                            References a defined as-path set
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="match-community-set">
+        <xs:complexType>
+            <xs:annotation>
+                <xs:documentation>
+                    Match a referenced community-set according to the logic
+                    defined in the match-set-options leaf
+                </xs:documentation>
+            </xs:annotation>
+            <xs:sequence>
+                <xs:element name="community-set" type="xs:string">
+                    <xs:annotation>
+                        <xs:documentation>
+                            References a defined community set
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="match-neighbor-set">
+        <xs:complexType>
+            <xs:annotation>
+                <xs:documentation>
+                    Match a referenced neighbor set according to the logic
+                    defined in the match-set-options-leaf
+                </xs:documentation>
+            </xs:annotation>
+            <xs:sequence>
+                <xs:element name="neighbor-set" type="xs:string">
+                    <xs:annotation>
+                        <xs:documentation>
+                            References a defined neighbor set
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="match-prefix-set">
+        <xs:complexType>
+            <xs:annotation>
+                <xs:documentation>
+                    Match a referenced prefix-set according to the logic
+                    defined in the match-set-options leaf
+                </xs:documentation>
+            </xs:annotation>
+            <xs:sequence>
+                <xs:element name="prefix-set" type="xs:string">
+                    <xs:annotation>
+                        <xs:documentation>
+                            References a defined prefix set
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:complexType name="GenericDefinedSet">
+        <xs:annotation>
+            <xs:documentation>
+                Data definitions for pre-defined sets of attributes used in
+                policy match conditions.  These sets are generic and can
+                be used in matching conditions in different routing
+                protocols.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="prefix-sets" minOccurs="0">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="prefix-set" type="PrefixSetType" maxOccurs="unbounded"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="neighbor-sets" minOccurs="0">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="neighbor-set" type="NeighborSetType" maxOccurs="unbounded"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="community-sets" minOccurs="0">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="community-set" type="CommunitySetType" maxOccurs="unbounded"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="as-path-sets" minOccurs="0">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="as-path-set" type="ASPathSetType" maxOccurs="unbounded"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:element name="metric" type="MetricType">
+        <xs:annotation>
+            <xs:documentation>
+                Set metric to routes matching the entry
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+
+    <xs:complexType name="MetricType">
+        <xs:annotation>
+            <xs:documentation>
+                Select either of the following:
+                metric add &lt;value&gt; or
+                metric subtract &lt;value&gt; or
+                metric set set-value &lt;value&gt;
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="add" minOccurs="0" type="MetricValueType">
+                <xs:annotation>
+                    <xs:documentation>
+                        Set metric value to be added to existing metric of
+                        the route matching the policy statement
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="subtract" minOccurs="0" type="MetricValueType">
+                <xs:annotation>
+                    <xs:documentation>
+                        Set metric value to be subtracted from existing metric
+                        of the route matching the policy statement
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="set" type="MetricValueType" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>
+                        Set absolute metric value for routes matching the
+                        policy statement
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:element name="accept-route-set">
+        <xs:complexType>
+            <xs:annotation>
+                <xs:documentation>
+                    Set the policy statement action to accept.
+                    Optionally configure additional actions to set/modify
+                    the route parameters.
+                </xs:documentation>
+            </xs:annotation>
+            <xs:sequence>
+                <xs:element name="accept-route"/>
+                <xs:element name="as-path-set" type="xs:string" minOccurs="0">
+                    <xs:annotation>
+                        <xs:documentation>
+                            Assign BGP AS Path list to routes matching the statement.
+                            References a defined as-path set
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element name="community-set" type="xs:string" minOccurs="0">
+                    <xs:annotation>
+                        <xs:documentation>
+                            Apply a BGP community list to routes matching the statement.
+                            References a defined community set
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element name="community-remove" type="xs:string" minOccurs="0">
+                    <xs:annotation>
+                        <xs:documentation>
+                            Remove a BGP community list to routes matching the statement.
+                            References a defined community set
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element name="community-replace" type="xs:string" minOccurs="0">
+                    <xs:annotation>
+                        <xs:documentation>
+                            Replace a BGP community list to routes matching the statement.
+                            References a defined community set
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element name="local-preference" type="LocalPreferenceType" minOccurs="0">
+                    <xs:annotation>
+                        <xs:documentation>
+                            Assign a BGP Local Preference to routes matching the statement
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element ref="metric" minOccurs="0"/>
+                <xs:element name="next-hop" type="IPv4Address" minOccurs="0">
+                    <xs:annotation>
+                        <xs:documentation>
+                            Assign a next hop IPv4 address to routes matching the
+                            policy statement
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element name="next-hop-ipv6" type="IPv6Address" minOccurs="0">
+                    <xs:annotation>
+                        <xs:documentation>
+                            Assign a next hop IPv6 address to routes matching the
+                            policy statement
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element name="next-hop-self" type="xs:boolean" minOccurs="0">
+                    <xs:annotation>
+                        <xs:documentation>
+                            Advertising a next hop IP address belonging to this
+                            router to routes matching the policy statement
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element name="preference" type="PreferenceType" minOccurs="0">
+                    <xs:annotation>
+                        <xs:documentation>
+                            Assign a route preference to routes matching the
+                            statement
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element name="as-path-prepend" type="ASNumber" minOccurs="0">
+                    <xs:annotation>
+                        <xs:documentation>
+                            Prepend a BGP AS number to the AS Path attribute of routes that match the entry
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element name="set-tag" minOccurs="0" type="PrefixLimit">
+                    <xs:annotation>
+                        <xs:documentation>
+                            The presence of this indicates that the routes
+                            should match the route-tag referenced.
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element name="metric-type" minOccurs="0" type="OSPFTypeMetric">
+                    <xs:annotation>
+                        <xs:documentation>
+                            The presence of this indicates that the routes
+                            should match the metric-type referenced.
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:complexType name="GenericActions">
+        <xs:annotation>
+            <xs:documentation>
+                Definitions for common set of policy action statements that
+                manage the disposition or control flow of the policy
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element ref="accept-route-set" minOccurs="0"/>
+            <xs:element name="reject-route" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>
+                        Rejects the route
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="set-tag" minOccurs="0" type="PrefixLimit">
+                <xs:annotation>
+                    <xs:documentation>
+                        The presence of this indicates that the routes
+                        should match the route-tag referenced.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="metric-type" minOccurs="0" type="OSPFTypeMetric">
+                <xs:annotation>
+                    <xs:documentation>
+                        The presence of this indicates that the routes
+                        should match the metric-type referenced.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+</xs:schema>

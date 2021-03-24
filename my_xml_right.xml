@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<routing-policy xmlns="alu:nuage:bgp:routing:policy">
+     <defined-sets>
+           <prefix-sets>
+                <prefix-set>
+                     <prefix-set-name>DefaultDeny</prefix-set-name>
+                     <prefix>
+                     <ip-prefix>0.0.0.0/0</ip-prefix>
+                           <masklength-range>exact</masklength-range>
+                     </prefix>
+                </prefix-set>
+           </prefix-sets>
+     </defined-sets>
+     <policy-definition>
+           <statements>
+                <statement>
+                     <name>entry_1</name>
+                     <conditions>
+                           <match-prefix-set>
+                                <prefix-set>DefaultDeny</prefix-set>
+                           </match-prefix-set>
+                     </conditions>
+                     <actions>
+                           <reject-route/>
+                     </actions>
+                </statement>
+           </statements>
+           <default-action>
+                <accept-route-set>
+                     <accept-route/>
+                </accept-route-set>
+           </default-action>
+     </policy-definition>
+</routing-policy>
