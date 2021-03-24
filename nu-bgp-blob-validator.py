@@ -24,7 +24,7 @@ if __name__ == '__main__':
         schema_file = "./xsd/bgp-routing-policies.xsd"
     elif args.n:
         schema_file = "./xsd/bgp-routing-neighbor.xsd"
-
+    # Loading XML file
     if os.path.exists(args.x) and os.access(args.x, os.R_OK):
         try:
             with open(args.x, mode='r', encoding='utf-8') as xfh:
