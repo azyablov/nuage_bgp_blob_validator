@@ -1,6 +1,6 @@
 # Simple NUAGE BGP BLOG validator
 
-Python script is using Nuage BGP schemas to validate provide BGP BLOBs.
+Python script is using Nuage BGP schemas to validate BGP BLOBs.
 
 You can validate BGP policies by using option```-p``` and BGP neighbor BLOBs by using option```-n```. 
 
