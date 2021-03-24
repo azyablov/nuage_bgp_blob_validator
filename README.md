@@ -18,7 +18,7 @@ optional arguments:
 ```
 # Example
 
-You can find two XML files:
+In the rool you can find two XML files:
 * my_xml_right.xml - one is correct BGP policy BLOB
 ![right](pic/right.png)
 * my_xml_wrong.xml - with invalid XML BLOB
